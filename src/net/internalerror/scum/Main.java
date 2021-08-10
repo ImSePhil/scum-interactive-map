@@ -17,5 +17,6 @@ public class Main extends Application {
         Tool tool = new Tool();
         primaryStage.setScene(new Scene(tool));
         primaryStage.show();
+        primaryStage.setOnCloseRequest(windowEvent -> tool.save());
     }
 }

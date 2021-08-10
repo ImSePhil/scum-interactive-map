@@ -13,12 +13,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
+import java.io.*;
 import java.nio.file.WatchKey;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 public class Tool extends BorderPane { // NOSONAR
 
@@ -66,6 +63,7 @@ public class Tool extends BorderPane { // NOSONAR
         btn_Save.setOnAction(actionEvent -> save());
         topButtonbar.getChildren().add(btn_Save);
         setTop(topButtonbar);
+        load();
     }
 
     public void createWaypoint(double x, double y) {
@@ -78,7 +76,7 @@ public class Tool extends BorderPane { // NOSONAR
         waypoints.add(waypoint);
     }
 
-    private void save() {
+    public void save() {
         StringBuilder xml = new StringBuilder();
         xml.append("<waypoints>");
 
@@ -94,6 +92,31 @@ public class Tool extends BorderPane { // NOSONAR
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
             writer.write(xml.toString());
             writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void load() {
+        File f = new File("waypoints.xml");
+        if (!f.exists()) return;
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(f));
+            String line = reader.readLine();
+            StringBuilder builder = new StringBuilder();
+            ;
+            while (line != null) {
+                builder.append(line);
+                line = reader.readLine();
+            }
+            String content = builder.toString();
+            content = content.replace("<waypoints>", "").replace("</waypoints>", "");
+            String[] split = content.split("((?=<waypoint>))");
+            for (String s : split) {
+                Waypoint waypoint = Waypoint.fromXML(s);
+                waypoints.add(waypoint);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

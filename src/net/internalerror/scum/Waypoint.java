@@ -1,12 +1,21 @@
 package net.internalerror.scum;
 
 
+import java.nio.file.WatchKey;
+import java.util.Arrays;
 import java.util.Observable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class Waypoint extends Observable {
     private int x, y;
     private String name;
+
+    private static final String namePattern = "<name>(.*?)</name>";
+    private static final String xPattern = "<x>(.*?)</x>";
+    private static final String yPattern = "<y>(.*?)</y>";
+
 
     public Waypoint(int x, int y, String name) {
         this.x = x;
@@ -16,6 +25,25 @@ public class Waypoint extends Observable {
 
     public Waypoint() {
 
+    }
+
+    public static Waypoint fromXML(String xml) {
+        Waypoint waypoint = new Waypoint();
+        Pattern pattern;
+        Matcher matcher;
+
+        pattern = Pattern.compile(namePattern, Pattern.DOTALL);
+        matcher = pattern.matcher(xml);
+        if (matcher.find()) waypoint.setName(matcher.group(1));
+        pattern = Pattern.compile(xPattern, Pattern.DOTALL);
+        matcher = pattern.matcher(xml);
+        if (matcher.find()) waypoint.setX(Integer.parseInt(matcher.group(1)));
+        pattern = Pattern.compile(yPattern, Pattern.DOTALL);
+        matcher = pattern.matcher(xml);
+        if (matcher.find()) waypoint.setY(Integer.parseInt(matcher.group(1)));
+
+
+        return waypoint;
     }
 
     public int getX() {
