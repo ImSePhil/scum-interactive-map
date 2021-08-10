@@ -3,6 +3,7 @@ package net.internalerror.scum;
 
 import java.util.Observable;
 
+
 public class Waypoint extends Observable {
     private int x, y;
     private String name;
@@ -14,6 +15,7 @@ public class Waypoint extends Observable {
     }
 
     public Waypoint() {
+
     }
 
     public int getX() {
@@ -73,5 +75,28 @@ public class Waypoint extends Observable {
     @Override
     public synchronized void setChanged() {
         super.setChanged();
+    }
+
+    /**
+     * <waypoint>
+     * <name>Bunker</name>
+     * <x>192.0</x>
+     * <y>123.23</y>
+     * </waypoint>
+     * {
+     * name: "Bunker"
+     * x: "123.123"
+     * y: "232.232"
+     * }
+     */
+
+    public String toXML() {
+        String xml = "<waypoint>\n\t<name>valueName</name>\n\t<x>valueX</x>\n\t<y>valueY</y>\n</waypoint>";
+        xml = xml.replace("valueName", name);
+        xml = xml.replace("valueX", x + "");
+        xml = xml.replace("valueY", y + "");
+
+
+        return xml;
     }
 }
